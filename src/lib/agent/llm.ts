@@ -121,7 +121,7 @@ export async function loadLlmConfig(ai?: AiSettings): Promise<LlmConfig | null> 
   const baseUrl = settings.baseUrl || preset?.baseUrl || ""
   const model = settings.model || preset?.model || ""
   if (!apiKey || !baseUrl || !model) return null
-  return { baseUrl, model, apiKey, folderId: settings.folderId || undefined, redact: !(settings.provider === "yandexgpt" || settings.provider === "gigachat") }
+  return { baseUrl, model, apiKey, folderId: settings.folderId || undefined, redact: !preset?.dataInRussia }
 }
 
 /** Ответ модели → действия платформы с учётом режима и настроек. */

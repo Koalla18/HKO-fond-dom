@@ -25,7 +25,7 @@ const Body = z.object({
   ai: z
     .object({
       enabled: z.boolean(),
-      provider: z.enum(["none", "yandexgpt", "gigachat", "deepseek", "openai", "custom"]),
+      provider: z.enum(["none", "timeweb", "yandexgpt", "gigachat", "deepseek", "openai", "custom"]),
       baseUrl: z.union([z.literal(""), z.string().trim().url().max(300)]),
       model: z.string().trim().max(200),
       folderId: z.string().trim().max(100),

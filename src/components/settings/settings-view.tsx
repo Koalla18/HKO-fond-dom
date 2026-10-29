@@ -166,6 +166,10 @@ function AssistantCard({ settings, save }: { settings: Settings; save: (body: Re
   const ready = provider !== "none" && (key.trim() || settings.aiKeyMask)
 
   async function saveModel() {
+    if (preset?.needsUrl && !baseUrl.trim()) {
+      toast.error(provider === "timeweb" ? "Вставьте OpenAI URL агента из панели Timeweb" : "Укажите адрес API")
+      return
+    }
     const ok = await save(
       {
         ai: { provider, baseUrl: baseUrl.trim(), model: model.trim(), folderId: folderId.trim(), signature: signature.trim() || ai.signature, handoffAfter: Number(handoffAfter) || ai.handoffAfter },
@@ -209,7 +213,7 @@ function AssistantCard({ settings, save }: { settings: Settings; save: (body: Re
 
         <div className="space-y-3">
           <Label>Модель</Label>
-          <div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="grid gap-2 sm:grid-cols-3 2xl:grid-cols-6">
             {AI_PRESETS.map((p) => (
               <button
                 key={p.id}
@@ -250,13 +254,21 @@ function AssistantCard({ settings, save }: { settings: Settings; save: (body: Re
               <div />
             )}
             <div className="space-y-1.5">
-              <Label htmlFor="ai-url">Адрес API</Label>
-              <Input id="ai-url" value={baseUrl} onChange={(e) => setBaseUrl(e.target.value)} placeholder={preset?.baseUrl || "https://…/v1"} />
+              <Label htmlFor="ai-url">{provider === "timeweb" ? "OpenAI URL агента" : "Адрес API"}</Label>
+              <Input id="ai-url" value={baseUrl} onChange={(e) => setBaseUrl(e.target.value)} placeholder={preset?.needsUrl || preset?.baseUrl || "https://…/v1"} />
+              {provider === "timeweb" && <p className="text-xs text-muted-foreground">Панель Timeweb → агент → «Доступ по API» → OpenAI URL. Ключ — «Токены авторизации».</p>}
             </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="ai-model">Модель</Label>
-              <Input id="ai-model" value={model} onChange={(e) => setModel(e.target.value)} placeholder={preset?.model || "имя модели"} />
-            </div>
+            {provider === "timeweb" ? (
+              <div className="space-y-1.5">
+                <Label>Модель</Label>
+                <p className="glass-tile px-3 py-2.5 text-sm text-white/70">Выбирается в настройках агента в Timeweb</p>
+              </div>
+            ) : (
+              <div className="space-y-1.5">
+                <Label htmlFor="ai-model">Модель</Label>
+                <Input id="ai-model" value={model} onChange={(e) => setModel(e.target.value)} placeholder={preset?.model || "имя модели"} />
+              </div>
+            )}
             <div className="space-y-1.5">
               <Label htmlFor="ai-sign">Как ассистент представляется людям</Label>
               <Input id="ai-sign" value={signature} onChange={(e) => setSignature(e.target.value)} />
