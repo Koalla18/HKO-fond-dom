@@ -90,6 +90,17 @@ cp .env.example .env   # APP_SECRET, ADMIN_*, POSTGRES_PASSWORD, APP_URL=http://
 docker compose up -d
 ```
 
+**Маленький сервер (2 ГБ, рядом другие сайты)** — сборка на своём компьютере, на сервер уходит готовая:
+
+```bash
+scripts/deploy.sh                                # по умолчанию jakone@31.130.155.216 → ~/dom-inbox
+DEPLOY_HOST=user@1.2.3.4 scripts/deploy.sh       # другой сервер
+```
+
+Первый запуск сам создаёт на сервере `.env` со случайными ключами и паролем администратора
+(посмотреть: `ssh <сервер> grep ADMIN_PASSWORD dom-inbox/.env`). Лимиты памяти — 512 МБ приложению,
+256 МБ базе (`deploy/docker-compose.server.yml`). Повторный запуск обновляет приложение, база и файлы сохраняются.
+
 ## Проверки
 
 ```bash
