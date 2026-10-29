@@ -10,51 +10,41 @@ export const dynamic = "force-dynamic"
 export default async function LoginPage() {
   const org = await getSetting("org")
   return (
-    <main className="relative grid min-h-svh place-items-center overflow-hidden p-4 lg:grid-cols-[1.15fr_1fr] lg:place-items-stretch lg:p-6">
-      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-[#070b18]">
+    <main className="relative flex min-h-svh flex-col items-center overflow-hidden px-5 pt-[9vh] pb-16 text-white sm:pt-[11vh]">
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-[#0a0d14]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/scene/window.webp" alt="" className="scene-photo h-full w-full object-cover object-[30%_55%]" />
-        <div className="absolute inset-0 bg-[linear-gradient(115deg,rgba(6,10,26,.7)_0%,rgba(6,10,26,.3)_50%,rgba(6,10,26,.6)_100%)]" />
+        <img src="/scene/puppy.webp" alt="" className="h-full w-full object-cover object-[42%_100%] sm:object-[50%_0%]" />
+        {/* Тень только под формой — щенок остаётся светлым по краям. */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_30%_40%_at_50%_34%,rgba(8,10,16,.8),rgba(8,10,16,.4)_62%,rgba(8,10,16,.08))] max-sm:bg-[linear-gradient(180deg,rgba(8,10,16,.82)_0%,rgba(8,10,16,.7)_55%,rgba(8,10,16,.1)_80%)]" />
       </div>
-      <section className="hidden flex-col justify-between p-8 text-white lg:flex">
+
+      <div className="w-full max-w-[340px]">
         {org.logoUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={org.logoUrl} alt={org.name} className="h-14 w-auto self-start brightness-0 invert" />
+          <img src={org.logoUrl} alt={org.name} className="mx-auto mb-7 h-12 w-auto brightness-0 invert" />
         ) : (
-          <span className="text-lg font-semibold">{org.name}</span>
+          <p className="mb-9 text-center text-lg font-semibold">{org.name}</p>
         )}
-        <div className="glass-rise max-w-lg space-y-5">
-          <p className="text-sm font-medium tracking-wide text-[#7ee3fa] uppercase">Единое окно заявок</p>
-          <h1 className="text-4xl leading-tight font-semibold tracking-tight">Ни одно обращение о помощи животному не потеряется.</h1>
-          <p className="text-base leading-relaxed text-white/75">
-            Сообщения из ВКонтакте, Telegram, MAX, Одноклассников, почты и сайта собираются в одну очередь, а ассистент сам оформляет из них заявки:
-            нашли животное, хотят взять питомца, готовы к передержке.
-          </p>
-          <ul className="grid grid-cols-2 gap-2 text-sm">
-            {["Один человек — одна история", "Ответ уходит туда, откуда пришёл вопрос", "Срочные случаи — наверху", "Заявки оформляет ассистент"].map((t) => (
-              <li key={t} className="glass-chip rounded-2xl px-3 py-2 text-white/85">
-                {t}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <p className="text-xs text-white/45">Фото: Alexis Antoine, Unsplash</p>
-      </section>
-      <section className="flex w-full items-center justify-center lg:p-6">
-        <div className="glass-panel glass-rise w-full max-w-md space-y-8 p-8 sm:p-10" style={{ animationDelay: "120ms" }}>
-          {org.logoUrl && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={org.logoUrl} alt={org.name} className="h-10 w-auto brightness-0 invert lg:hidden" />
+        <h1 className="mb-5 text-center text-[28px] font-semibold tracking-tight">Вход</h1>
+        <Suspense>
+          <LoginForm />
+        </Suspense>
+      </div>
+
+      <footer className="absolute inset-x-0 bottom-0 flex flex-wrap items-end justify-between gap-2 px-5 pb-4 text-xs text-white/60 [text-shadow:0_1px_2px_rgb(0_0_0/0.6)]">
+        <span>
+          {org.name}
+          {org.site && (
+            <>
+              {" · "}
+              <a href={org.site} className="hover:text-white">
+                {org.site.replace(/^https?:\/\//, "")}
+              </a>
+            </>
           )}
-          <div className="space-y-1.5">
-            <h2 className="text-2xl font-semibold tracking-tight text-white">Вход для команды фонда</h2>
-            <p className="text-sm text-muted-foreground">Почта и пароль, которые выдал администратор.</p>
-          </div>
-          <Suspense>
-            <LoginForm />
-          </Suspense>
-        </div>
-      </section>
+        </span>
+        <span>Фото: Chris Leipelt, Unsplash</span>
+      </footer>
     </main>
   )
 }
