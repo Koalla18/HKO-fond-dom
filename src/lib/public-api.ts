@@ -22,6 +22,12 @@ export function rateLimited(key: string, max: number, windowMs: number) {
   return list.length > max
 }
 
-export function clientIp(req: Request) {
-  return req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.headers.get("x-real-ip") || "local"
+/**
+ * Адрес посетителя. Заголовкам X-Forwarded-For / X-Real-IP верим, только если перед платформой
+ * стоит свой прокси (TRUST_PROXY=1, например Caddy с HTTPS) — иначе любой подставит в них что угодно
+ * и обойдёт лимиты. Без прокси адреса не видно: возвращаем null.
+ */
+export function clientIp(req: Request): string | null {
+  if (process.env.TRUST_PROXY !== "1") return null
+  return req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.headers.get("x-real-ip") || null
 }

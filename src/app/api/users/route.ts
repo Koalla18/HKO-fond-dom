@@ -17,7 +17,7 @@ const Body = z.object({
   email: z.string().trim().toLowerCase().email("неверный адрес"),
   name: z.string().trim().min(1).max(100),
   role: z.enum(["admin", "agent"]).default("agent"),
-  password: z.string().min(8, "минимум 8 символов"),
+  password: z.string().min(10, "минимум 10 символов").max(200),
 })
 
 export const POST = api(

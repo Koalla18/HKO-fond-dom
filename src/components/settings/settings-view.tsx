@@ -381,7 +381,7 @@ function InviteDialog({ open, onOpenChange, onDone }: { open: boolean; onOpenCha
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="u-pass">Временный пароль</Label>
-            <Input id="u-pass" name="password" type="text" minLength={8} required autoComplete="off" />
+            <Input id="u-pass" name="password" type="text" minLength={10} required autoComplete="off" />
           </div>
           <div className="space-y-1.5">
             <Label>Роль</Label>
@@ -413,7 +413,7 @@ function ResetPassword({ user }: { user: TeamUser }) {
       size="sm"
       variant="ghost"
       onClick={async () => {
-        const password = prompt(`Новый пароль для ${user.name} (минимум 8 символов)`)
+        const password = prompt(`Новый пароль для ${user.name} (минимум 10 символов)`)
         if (!password) return
         try {
           await apiFetch(`/api/users/${user.id}`, { method: "PATCH", json: { password } })

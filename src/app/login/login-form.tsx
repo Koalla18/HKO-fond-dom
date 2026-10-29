@@ -10,6 +10,17 @@ import { apiFetch } from "@/lib/client"
 // Поля прямо на фото: полупрозрачные, без карточки вокруг формы.
 const field = "h-11 rounded-[10px] border-white/20 bg-white/10 text-white placeholder:text-white/40 focus-visible:border-white/60 focus-visible:ring-white/20"
 
+/** Куда вернуть после входа: только страницы этого кабинета («/\\evil.com» браузер считает чужим сайтом). */
+function safeNext(next: string | null) {
+  if (!next || !next.startsWith("/") || next.startsWith("//") || next.includes("\\")) return "/inbox"
+  try {
+    const url = new URL(next, window.location.origin)
+    return url.origin === window.location.origin ? url.pathname + url.search + url.hash : "/inbox"
+  } catch {
+    return "/inbox"
+  }
+}
+
 export function LoginForm() {
   const router = useRouter()
   const params = useSearchParams()
@@ -23,8 +34,7 @@ export function LoginForm() {
     setError(null)
     try {
       await apiFetch("/api/auth/login", { method: "POST", json: { email: form.get("email"), password: form.get("password") } })
-      const next = params.get("next")
-      router.replace(next && next.startsWith("/") && !next.startsWith("//") ? next : "/inbox")
+      router.replace(safeNext(params.get("next")))
       router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : "Не удалось войти")

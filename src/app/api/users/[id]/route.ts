@@ -11,7 +11,7 @@ const Body = z.object({
   name: z.string().trim().min(1).max(100).optional(),
   role: z.enum(["admin", "agent"]).optional(),
   active: z.boolean().optional(),
-  password: z.string().min(8, "минимум 8 символов").optional(),
+  password: z.string().min(10, "минимум 10 символов").max(200).optional(),
 })
 
 export const PATCH = api(

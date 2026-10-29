@@ -55,7 +55,10 @@ export async function POST(req: Request, ctx: Ctx) {
   const { channelId } = await ctx.params
   const loaded = /^[0-9a-f-]{36}$/.test(channelId) ? await loadChannel(channelId) : null
   if (!loaded || loaded.channel.kind !== "webform" || !loaded.channel.enabled) return json({ error: "Форма не найдена" }, 404)
-  if (rateLimited(`form:${clientIp(req)}`, 10, 10 * 60_000)) return json({ error: "Слишком много заявок, попробуйте позже" }, 429)
+  // С адресом — лимит на посетителя; без прокси адреса нет — общий потолок на канал.
+  const ip = clientIp(req)
+  const limited = ip ? rateLimited(`form:${ip}`, 10, 10 * 60_000) : rateLimited("form:all", 60, 10 * 60_000)
+  if (limited) return json({ error: "Слишком много заявок, попробуйте позже" }, 429)
 
   const type = req.headers.get("content-type") ?? ""
   let fields: Record<string, string> = {}

@@ -74,7 +74,11 @@ export async function POST(req: Request, ctx: Ctx) {
   const text = String(body.text ?? "").trim().slice(0, 4000)
   if (!VISITOR.test(visitorId)) return json({ error: "bad visitor" }, 400)
   if (!text) return json({ error: "Пустое сообщение" }, 400)
-  if (rateLimited(`widget:${clientIp(req)}`, 30, 60_000)) return json({ error: "Слишком часто, подождите минуту" }, 429)
+  const ip = clientIp(req)
+  const limited =
+    rateLimited(`widget-visitor:${visitorId}`, 20, 60_000) ||
+    (ip ? rateLimited(`widget:${ip}`, 30, 60_000) : rateLimited("widget:all", 300, 60_000))
+  if (limited) return json({ error: "Слишком часто, подождите минуту" }, 429)
   await ingestIncoming(loaded.channel, {
     externalUserId: `visitor:${visitorId}`,
     replyTo: `visitor:${visitorId}`,
