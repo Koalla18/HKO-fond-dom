@@ -37,7 +37,14 @@ const Body = z.object({
     .partial()
     .optional(),
   /** Новый ключ API ассистента; пустая строка — не менять, null — удалить. */
-  aiKey: z.string().trim().max(500).nullable().optional(),
+  // Токены бывают длинными (у Timeweb — JWT на тысячи символов); при копировании из панели
+  // в них попадают переносы строк и приставка «Bearer» — убираем.
+  aiKey: z
+    .string()
+    .transform((v) => v.replace(/\s+/g, "").replace(/^Bearer/i, ""))
+    .pipe(z.string().max(16_000, "ключ слишком длинный"))
+    .nullable()
+    .optional(),
   applications: z
     .object({
       goals: z.object({ homesPerMonth: z.number().int().min(0).max(1000), replyWithinHourPct: z.number().int().min(0).max(100) }),

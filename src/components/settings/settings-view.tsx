@@ -173,7 +173,7 @@ function AssistantCard({ settings, save }: { settings: Settings; save: (body: Re
     const ok = await save(
       {
         ai: { provider, baseUrl: baseUrl.trim(), model: model.trim(), folderId: folderId.trim(), signature: signature.trim() || ai.signature, handoffAfter: Number(handoffAfter) || ai.handoffAfter },
-        ...(key.trim() ? { aiKey: key.trim() } : {}),
+        ...(key.trim() ? { aiKey: key.replace(/\s+/g, "") } : {}),
       },
       "Настройки ассистента сохранены",
     )
