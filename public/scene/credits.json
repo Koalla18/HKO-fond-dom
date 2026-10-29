@@ -1,0 +1,9 @@
+{
+  "license": "Unsplash License — https://unsplash.com/license",
+  "photos": {
+    "window": { "author": "Alexis Antoine", "url": "https://unsplash.com/photos/tj3KKeRGJ50" },
+    "candle": { "author": "Bernd Dittrich", "url": "https://unsplash.com/photos/Pl3Gt4HCyi8" },
+    "shepherd": { "author": "Lesly Juarez", "url": "https://unsplash.com/photos/aoo35WfyW0w" },
+    "cat": { "author": "Jason Mayer", "url": "https://unsplash.com/photos/qMIxqu19658" }
+  }
+}

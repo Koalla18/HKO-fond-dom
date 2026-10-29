@@ -1,0 +1,34 @@
+# Развёртывание на сервере: cp .env.example .env → заполнить → docker compose up -d
+# Платформа будет доступна на http://<IP сервера>:3050
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://dom:${POSTGRES_PASSWORD:?задайте POSTGRES_PASSWORD в .env}@db:5432/dom_inbox
+    ports:
+      - "3050:3050"
+    volumes:
+      - files:/app/storage
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: dom_inbox
+      POSTGRES_USER: dom
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dom -d dom_inbox"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  pg:
+  files:
